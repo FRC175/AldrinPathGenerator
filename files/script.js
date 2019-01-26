@@ -28,16 +28,17 @@ var points = null;
 var config = [];
 var path = null;
 var ctx;
-var width = 1656; // pixels
-var height = 823; // pixels
-var fieldWidth = 652; // inches
-var fieldHeight = 324; // inches
+var width = 1734; // 1656 pixels
+var height = 858; // 823 pixels
+var fieldWidth = 654; // 652 inches
+var fieldHeight = 324; // 324 inches
 var pointRadius = 5;
 var turnRadius = 30;
 var kEpsilon = 1E-9;
 var image;
 var imageFlipped;
 var wto;
+
 
 
 var maxSpeed = 120;
