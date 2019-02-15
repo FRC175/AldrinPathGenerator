@@ -1,25 +1,25 @@
-///////////////////////////////////////////////////////////
-// Change these values to fit your robot
-///////////////////////////////////////////////////////////
+// --------------------------------------------------
+// Change these values to fit your robot and game
+// --------------------------------------------------
 var robotWidth = 28.0; // inches
 var robotHeight = 33.0; // inches
 var wheelbaseWidth = 28; // inches
 var wheelDiameter = 4.875; // inches
 
-var startLeftY = 276;
-var startCenterY = 159;
-var startRightY = 48;
+var width = 1734; // 1656 pixels
+var height = 858; // 823 pixels
+var fieldWidth = 654; // 652 inches
+var fieldHeight = 324; // 324 inches
 
-var fileHeader = `
-package frc.team175.robot.paths;
- 
-import frc.team175.robot.util.*;
-`;
+var startLeftY = 211;
+var startCenterY = 162;
+var startRightY = 113;
 
+var fileHeader = `package com.team175.robot.paths;`;
 
-///////////////////////////////////////////////////////////
+// --------------------------------------------------
 // DON'T CHANGE UNLESS YOU ARE SURE
-///////////////////////////////////////////////////////////
+// --------------------------------------------------
 var kEncoderCountsPerRev = 4096.0;
 var k100msPerMinute = 600.0;
 
@@ -28,24 +28,18 @@ var points = null;
 var config = [];
 var path = null;
 var ctx;
-var width = 1734; // 1656 pixels
-var height = 858; // 823 pixels
-var fieldWidth = 654; // 652 inches
-var fieldHeight = 324; // 324 inches
 var pointRadius = 5;
 var turnRadius = 30;
 var kEpsilon = 1E-9;
-var image;
-var imageFlipped;
-var wto;
-
-
-
 var maxSpeed = 120;
 var maxSpeedColor = [0, 255, 0];
 var minSpeed = 0;
 var minSpeedColor = [255, 0, 0];
 var pathFillColor = "rgba(150, 150, 150, 0.5)";
+
+var image;
+var imageFlipped;
+var wto;
 
 function changeStartPoint() {
     if (parseInt($($($($('tbody').children()[0]).children()[1]).children()).val()) == startLeftY) {
@@ -276,13 +270,11 @@ function init() {
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = "#FF0000";
     image = new Image();
-    image.src = 'files/2019-field-3.png';
+    image.src = 'img/2019-field-3.png';
     image.onload = function () {
         ctx.drawImage(image, 0, 0, width, height);
         update();
     }
-    imageFlipped = new Image();
-    imageFlipped.src = 'files/field.png';
     $('input').bind("change paste keyup", function () {
         // console.log("change");
         clearTimeout(wto);
@@ -629,7 +621,7 @@ function getDataString() {
     var isReversed = $("#isReversed").is(':checked');
     var num_elements = path.getCenterTrajectory().getNumSegments();
 
-    var set_segments = "private double[][] centerPoints = {\n";
+    var set_segments = "private double[][] mPoints = {\n";
 
     var lastHeading = 0;
     var continuousHeading = 0;
@@ -666,21 +658,10 @@ function getDataString() {
 
     var str = `${fileHeader}
 
-public class ${title} extends SRXTrajectory {
-
-	private boolean mHighGear = true;
+public class ${title} extends Path {
     
-	public ${title}() {
-		super();
-		this.highGear = true;
-		centerProfile = new SRXMotionProfile(centerPoints.length, centerPoints);
-	}
-	
-	public ${title}(boolean flipped) {
-		super();
-		this.highGear = true;
-		this.flipped = flipped;
-		centerProfile = new SRXMotionProfile(centerPoints.length, centerPoints);
+	public ${title}(boolean isReversed) {
+		super(isReversed, mPoints);
 	}
 
 	${set_segments}
@@ -706,9 +687,9 @@ function showData() {
     $("#modalTitle").html(title + ".java");
     $(".modal > pre").html("<code class='java'>" + getDataString() + "</code>");
 
-    $(".modal > pre").each((i, block) => {
-        hljs.highlightBlock(block);
-    });
+    // $(".modal > pre").each((i, block) => {
+    //     hljs.highlightBlock(block);
+    // });
 
     showModal();
 }
@@ -867,9 +848,7 @@ function loadConfig() {
         tmp_encoderticksrev = 4096;
 
     if (tmp_fileheader === "") {
-        tmp_fileheader = `package frc.team175.robot.paths;
- 
-import frc.team175.robot.util.*;`;
+        tmp_fileheader = `package com.team175.robot.paths;`;
     }
 
     $("td.dt input").val(tmp_dt);
@@ -882,9 +861,9 @@ import frc.team175.robot.util.*;`;
     $("td.wheeldiameter input").val(tmp_wheeldiameter);
     $("td.encoderticksrev input").val(tmp_encoderticksrev);
     $("td.fileheadertxt pre > code > div").text(tmp_fileheader);
-    $("td.fileheadertxt > pre").each((i, block) => {
-        hljs.highlightBlock(block);
-    });
+    // $("td.fileheadertxt > pre").each((i, block) => {
+    //     hljs.highlightBlock(block);
+    // });
 }
 
 function saveConfig() {
